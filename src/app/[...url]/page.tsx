@@ -4,12 +4,6 @@ import { redis } from '@/lib/redis';
 import { cookies } from 'next/headers';
 import React from 'react';
 
-interface PageProps {
-  params: {
-    url: string | string[] | undefined;
-  };
-}
-
 // Safely handle URL decoding and joining
 function consturl(url: string | string[] | undefined): string {
   if (!url) return ''; // Handle undefined URL
@@ -17,10 +11,9 @@ function consturl(url: string | string[] | undefined): string {
   return urlArray.map((e) => decodeURIComponent(e)).join('/');
 }
 
-export default async function Page({ params }: PageProps) {
-  const resolvedParams = await params; // Await params if needed
+export default async function Page({ params }: Awaited<ReturnType<typeof import('next/types').getServerSideProps>>) {
   const sessionCookie = (await cookies()).get("sessionid")?.value;
-  const url = consturl(resolvedParams.url);
+  const url = consturl(await params.url); // Await params.url
   
   // Check for valid URL before proceeding
   if (!url) {
