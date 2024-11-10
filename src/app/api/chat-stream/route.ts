@@ -14,16 +14,11 @@ export async function POST(req: NextRequest) {
 
     const lastMessage = messages[messages.length - 1].content;
 
-    // إرسال آخر رسالة إلى RAG-Chat API
     const response = await ragchat.chat(lastMessage, { streaming: true, sessionId });
 
-    // إذا كنت بحاجة إلى ترجمة النص إلى اللغة العربية
-    const translation = await translateText(lastMessage, "ar");
 
     console.log("Original Response:", response);
-    console.log("Translated Message:", translation);
-
-    // الرد باستخدام AI chat adapter
+  
     return aiUseChatAdapter(response);
   } catch (error) {
     console.error("Error processing request:", error);
