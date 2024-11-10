@@ -11,9 +11,9 @@ function consturl(url: string | string[] | undefined): string {
   return urlArray.map((e) => decodeURIComponent(e)).join('/');
 }
 
-export default async function Page({ params }: Awaited<ReturnType<typeof import('next/types').getServerSideProps>>) {
+export default async function Page({ params }: { params: any }) {
   const sessionCookie = (await cookies()).get("sessionid")?.value;
-  const url = consturl(await params.url); // Await params.url
+  const url = consturl(params.url); // Use params.url directly
   
   // Check for valid URL before proceeding
   if (!url) {
