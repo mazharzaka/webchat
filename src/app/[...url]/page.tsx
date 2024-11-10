@@ -18,8 +18,9 @@ function consturl(url: string | string[] | undefined): string {
 }
 
 export default async function Page({ params }: PageProps) {
+  const resolvedParams = await params; // Await params if needed
   const sessionCookie = (await cookies()).get("sessionid")?.value;
-  const url = consturl(params.url);
+  const url = consturl(resolvedParams.url);
   
   // Check for valid URL before proceeding
   if (!url) {
