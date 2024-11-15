@@ -1,54 +1,75 @@
 'use cleint'
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { type Message as TMessage } from 'ai/react';
+
 interface MessageProps {
   content: string,
-  isUserMassge: boolean
-}
-function MMessage({ content, isUserMassge }: MessageProps) {
-  // const [text, setText] = useState('');
-  // const [translatedText, setTranslatedText] = useState('');
-  // const [targetLanguage, setTargetLanguage] = useState('es'); // Example target language
+  isUserMassge: string,
+  newarr: TMessage[][]; // تعديل النوع ليطابق TMessage
 
-  // const handleTranslate = async () => {
-  //   const response = await fetch('/api/translate', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ content, targetLanguage }),
-  //   });
-  //   const data = await response.json();
-  //   console.log(data);
+}
+function MMessage({ content, isUserMassge, newarr }: MessageProps) {
+  const [text, setText] = useState("")
+  // const [previousLan, setPreviousLan] = useState<'ar' | 'en' | null>(null);
+
+  useEffect(() => {
+    const handleTranslate = async (textc: string) => {
+      try {
+        const response = await axios.post<{ translatedText: string }>(
+          'http://localhost:5000/translate',
+          {
+            text: textc,
+            to: 'ar',
+          }
+        );
+        setText(response.data.translatedText);
+      } catch (error) {
+        console.error('Error translating text:', error);
+      }
+    };
+
+    // Regular expression to detect Arabic characters
+    const arabic = /[\u0600-\u06FF]/;
+
+    // تحديد اللغة بناءً على النص
+    let lan: 'ar' | 'en' | null = null;
+    const isArabic = (text:string) => /[\u0600-\u06FF]/.test(text);
+    const arabicObjects = newarr.filter(item => isArabic(item[0].content));
+   const values= arabicObjects.map(e=>e[1].content)
+    values.includes(content)&& handleTranslate(content);
     
-  //   setTranslatedText(data.translation);
-  // };
+
+  }, [content, isUserMassge, newarr]);
   return (
     <>
-    {isUserMassge?
-    <div className='flex p-1 '>
-     
-      <div className='bg-[#1F2937] rounded md:w-[300px] w-40 text-xs text-white max-w-full'>
-        <div className='max-w-full p-1'>
-          <img className="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="/download.jfif" alt="user" />
-          <span className='ml-2 text-xs'>Mazhar </span>
-        </div>
-        <div className='p-2'>
-          {content}
-        </div>
-      </div>
-    </div>:
-    <div className='flex justify-end p-1 '>
+      {isUserMassge === "user" ?
+        <div className='flex p-1 '>
+
+          <div className='bg-[#1F2937] rounded md:w-[300px] w-40 text-xs text-white max-w-full'>
+            <div className='max-w-full p-1'>
+              <img className="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="/download.jfif" alt="user" />
+              <span className='ml-2 text-xs'>Mazhar </span>
+            </div>
+            <div className='p-2'>
+              {content}
+            </div>
+          </div>
+        </div> :
+        <div className='flex justify-end p-1 '>
+          {/* <button onClick={handleTranslate}>Translate</button> */}
+          <div className='bg-[#3B4252] md:w-[300px] w-40 rounded text-xs text-white max-w-full'>
+            <div className='max-w-full p-1'>
+              <img className="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="/chat-bot.png" alt="user" />
+              <span className='ml-2 text-xs'>Mr.bot </span>
+            </div>
+            <div className='p-2'>
+              {text ? text : content}
+            </div>
+          </div>
+        </div>}
       {/* <button onClick={handleTranslate}>Translate</button> */}
-    <div className='bg-[#3B4252] md:w-[300px] w-40 rounded text-xs text-white max-w-full'>
-      <div className='max-w-full p-1'>
-        <img className="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="/chat-bot.png" alt="user" />
-        <span className='ml-2 text-xs'>Mr.bot </span>
-      </div>
-      <div className='p-2'>
-        {content}
-      </div>
-    </div>
-  </div>}
-  {/* <button onClick={handleTranslate}>Translate</button> */}
-  </>
+    </>
   )
 }
 

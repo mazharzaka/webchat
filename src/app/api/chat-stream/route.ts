@@ -1,5 +1,4 @@
 import { ragchat } from "@/lib/rag-chat";
-import { translateText } from "@/lib/translate";
 import { aiUseChatAdapter } from "@upstash/rag-chat/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 

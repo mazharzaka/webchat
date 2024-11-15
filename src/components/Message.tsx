@@ -7,12 +7,20 @@ interface MassagesProps {
 }
 
 function Messagee({ messages }: MassagesProps) {
+  
+  const output: TMessage[][] = [];
+  for (let index = 0; index < messages.length - 1; index += 2) {
+    output.push([messages[index], messages[index + 1]]);
+  }
+  // console.log(output);
 
     return (
         <div className='flex h-[90%] flex-col flex-1 overflow-y-auto'>
           {messages.length!==0 ? (
         messages.map((e, i) => (
-          <MMessage key={i} content={e.content} isUserMassge={e.role==="user"}/>
+          <MMessage key={i} content={e.content} 
+          newarr={output} 
+          isUserMassge={e.role}/>
         ))
       ) : (
         <div className='flex h-[90%] flex-col flex-1  justify-center items-center' >
