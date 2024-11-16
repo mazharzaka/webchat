@@ -21,7 +21,7 @@ export const Chatwapper = ({ sessionId, initialMessages }: { sessionId: string, 
     return ( 
         <div className='flex items-center pt-1  flex-col h-screen bg-[#1E293B]'>
             <Header />
-            <div className='md:w-[700px] w-72 h-[30rem] rounded mb-2 bg-[#334155]'>
+            <div className='md:w-[700px] w-72 md:h-[40rem] h-[30rem] rounded mb-2 bg-[#334155]'>
                 <Messagee messages={messages} />
 
                 <form onSubmit={handleSubmit} className='flex justify-center'>
